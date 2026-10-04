@@ -35,9 +35,9 @@ const Notes = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const openModal = () => setIsModalOpen(true)
+  //const openModal = () => setIsModalOpen(true)
 
-  const closeModal = () => setIsModalOpen(false)
+  //const closeModal = () => setIsModalOpen(false)
 
 
   const { data, isLoading, isError, isSuccess } = useQuery({
