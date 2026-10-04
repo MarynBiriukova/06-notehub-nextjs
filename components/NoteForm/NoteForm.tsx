@@ -10,7 +10,8 @@ import type { NewNoteData } from '../../types/note';
 
 
 interface NoteFormProps {
-    onClose: () => void;
+  onClose?: () => void;
+  onSuccess: () => void;
 }
 
 interface FormValues {
@@ -34,14 +35,14 @@ const NoteSchema = Yup.object().shape({
     .required("Tag is required!"),
 });
 
-export default function NoteForm({ onClose }: NoteFormProps) {
+export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({ 
     mutationFn: (newNoteData: NewNoteData) => createNote(newNoteData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'], }); 
-      onClose();
+      onSuccess();
     },
     onError: (error) => { console.error('Помилка при create Note:', error); }
   });
