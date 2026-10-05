@@ -42,7 +42,7 @@ export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormPr
     mutationFn: (newNoteData: NewNoteData) => createNote(newNoteData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'], }); 
-      onSuccess();
+      //onSuccess();
     },
     onError: (error) => { console.error('Помилка при create Note:', error); }
   });
@@ -58,8 +58,15 @@ export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormPr
         title: values.title,
         content: values.content,
         tag: values.tag
+      },
+        {
+          onSuccess: () => {
+            resetForm();
+            onSuccess();
+            if (onClose) onClose();
+        }
       });
-        resetForm();
+        //resetForm();
     };
 
 
@@ -112,10 +119,18 @@ export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormPr
     <ErrorMessage name="tag" component="span" className={css.error} />
   </div>
 
-  <div className={css.actions}>
-    <button type="button" className={css.cancelButton} onClick={onClose}>
-      Cancel
-    </button>
+          <div className={css.actions}>
+            
+            {onClose && (
+              <button
+                type="button"
+                className={css.cancelButton}
+                onClick={onClose}
+                disabled={mutation.isPending}
+              >
+                Cancel
+              </button>
+            )}
     <button
                     type="submit"
                     className={css.submitButton}

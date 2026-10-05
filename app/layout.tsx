@@ -24,8 +24,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <TanStackProvider>
+      
       <body>
+        <TanStackProvider>
         <Header/>
         
         <main>
@@ -34,8 +35,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
           <Footer />
           <div id="modal-root"></div>
-        </body>
         </TanStackProvider>
+        </body>
+        
     </html>
   );
 }

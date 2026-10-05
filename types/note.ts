@@ -16,7 +16,7 @@ export interface NewNoteData {
 }
 
 /******************************************************* */
-    
+/*    
 export interface NoteListResponse {
   notes: NoteResponse[]
   total: number
@@ -28,4 +28,4 @@ export interface NoteResponse {
   content: string
   categoryId: string
   userId: string
-}
+}*/

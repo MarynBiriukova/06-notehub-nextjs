@@ -36,10 +36,31 @@ export default function Modal({ onClose, children }: ModalProps) {
     return () => setMounted(false);
   }, []);
 
+
+  useEffect(() => {
+    if (!mounted) return ;
+
+    /****************************************************** */
+  
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [mounted, onClose]);
+
+  /****************************************************** */
   if (!mounted) return null;
 
   const modalRoot = document.getElementById('modal-root');
-
   const targetContainer = modalRoot || document.body;
   
   return createPortal(
