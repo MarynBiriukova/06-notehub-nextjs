@@ -10,8 +10,8 @@ import type { NewNoteData } from '../../types/note';
 
 
 interface NoteFormProps {
-  onClose?: () => void;
-  onSuccess: () => void;
+  onClose: () => void;
+  //onSuccess: () => void;
 }
 
 interface FormValues {
@@ -29,13 +29,13 @@ const NoteSchema = Yup.object().shape({
         .required("Title is required!"),
   content: Yup.string()
     .max(500, "Content cannot exceed 500 characters!")
-    .optional(),  
+    .notRequired(),
   tag: Yup.string()
     .oneOf(ALLOWED_TAGS, "Invalid tag selection")
     .required("Tag is required!"),
 });
 
-export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormProps) {
+export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({ 
@@ -44,7 +44,7 @@ export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormPr
       queryClient.invalidateQueries({ queryKey: ['notes'], }); 
       //onSuccess();
     },
-    onError: (error) => { console.error('Помилка при create Note:', error); }
+    onError: (error) => { console.error('Error create Note:', error); }
   });
 
     const initialValues: FormValues = {
@@ -53,29 +53,30 @@ export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormPr
         tag: 'Todo',
     };
 
-    const handleSubmit = (values: FormValues, {resetForm}: {resetForm: () => void}) => {
-      mutation.mutate({
-        title: values.title,
-        content: values.content,
-        tag: values.tag
-      },
-        {
-          onSuccess: () => {
-            resetForm();
-            onSuccess();
-            if (onClose) onClose();
-        }
-      });
-        //resetForm();
-    };
-
-
     return (
    /*********************************************************** */  
    <Formik 
    initialValues={initialValues}
    validationSchema={NoteSchema}
-   onSubmit={handleSubmit}>
+   onSubmit={(values, actions) => {
+        
+
+       mutation.mutate(
+          {
+            title: values.title,
+            content: values.content,
+            tag: values.tag
+          },
+          {
+            onSuccess: () => {
+              actions.resetForm(); // Очищення полів форми
+              onClose();           // Закриття форми
+            }
+          }
+        );
+      }}
+      >
+
             <Form className={css.form}>
                 
   <div className={css.formGroup}>
@@ -121,7 +122,7 @@ export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormPr
 
           <div className={css.actions}>
             
-            {onClose && (
+            
               <button
                 type="button"
                 className={css.cancelButton}
@@ -130,7 +131,7 @@ export default function NoteForm({ onSuccess,  onClose = onSuccess }: NoteFormPr
               >
                 Cancel
               </button>
-            )}
+            
     <button
                     type="submit"
                     className={css.submitButton}
