@@ -103,7 +103,7 @@ const Notes = () => {
 {isModalOpen && (
               <Modal
                   onClose={() => setIsModalOpen(false)}>
-          <NoteForm onSuccess={() => setIsModalOpen(false)} />
+          <NoteForm onClose={() => setIsModalOpen(false)} />
         </Modal>
       )}
 
